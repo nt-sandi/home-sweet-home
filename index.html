@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Home Sweet Home</title>
+  <!-- Font Awesome 6 (free) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Google Fonts: Poppins + Playfair + Inter (flexible) -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700;800&family=Inter:opsz,wght@14..32,300..700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Poppins', sans-serif; background: #0a0a0a; color: #f0f0f0; overflow-x: hidden; }
+
+    /* ----- navigation (glass unified) ----- */
+    nav {
+      position: fixed; top: 0; left: 0; width: 100%; padding: 1rem 6%; display: flex;
+      justify-content: space-between; align-items: center; z-index: 1000;
+      backdrop-filter: blur(16px) saturate(180%); background: rgba(8, 8, 8, 0.75);
+      border-bottom: 1px solid rgba(20, 255, 114, 0.25);
+    }
+    /* logo container using image */
+    .logo {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-size: 1.8rem; font-weight: 700; letter-spacing: -0.5px;
+      color: white;
+    }
+    .logo-img {
+      height: 50px; width: auto; display: block;
+      filter: drop-shadow(0 0 8px #14ff72);
+      border-radius: 8px;
+    }
+    .logo span { color: #ffb6c1; background: none; }
+
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { text-decoration: none; color: #eee; font-weight: 500; font-size: 1.1rem; position: relative; padding: 0.3rem 0; }
+    .nav-links a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0%; height: 2.5px; background: #14ff72cb; transition: 0.25s; }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-links a i { color: #25D366; }
+    .menu-btn { display: none; font-size: 2.2rem; color: #14ff72; cursor: pointer; }
+
+    /* floating WhatsApp (single, updated number) */
+    .whatsapp-float {
+      position: fixed; bottom: 30px; right: 25px; background: #25D366; width: 65px; height: 65px;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;
+      font-size: 2.4rem; box-shadow: 0 10px 25px rgba(0,0,0,0.6); z-index: 999; transition: 0.25s;
+      border: 2px solid #ffffff80; text-decoration: none;
+    }
+    .whatsapp-float:hover { transform: scale(1.1); background: #20b859; box-shadow: 0 10px 35px #14ff7280; }
+
+    /* section containers – each with unique flavour but same spacing */
+    section { width: 100%; }
+    .section-padding { padding: 6rem 6%; }
+    .bg-dark1 { background: #0a0a0a; }
+    .bg-dark2 { background: #0b0b0b; }
+    .bg-dark3 { background: #0f0f0f; }
+    .bg-cream { background: #fcf9f4; color: #2e2e2e; }
+    .bg-soft { background: #f8fafc; color: #1e293b; }
+    .bg-warm { background: #f4f1eb; color: #2e2b26; }
+
+    /* typography helpers */
+    .section-title { font-size: 2.8rem; font-weight: 600; margin-bottom: 3rem; border-left: 8px solid #14ff72; padding-left: 2rem; }
+    .section-title span { color: #14ff72; }
+    .gold-title { border-left-color: #d4af37; }
+    .gold-title span { color: #d4af37; }
+    .blue-title { border-left-color: #3b82f6; }
+    .blue-title span { color: #3b82f6; }
+
+    /* buttons */
+    .btn-group { display: flex; gap: 1.2rem; flex-wrap: wrap; }
+    .btn {
+      padding: 1rem 2.5rem; border-radius: 60px; font-weight: 600; font-size: 1.1rem;
+      border: none; cursor: pointer; transition: 0.3s; border: 1px solid transparent;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 10px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    }
+    .btn-wa { background: #25D366; color: #000; border: 1px solid #ffffff80; }
+    .btn-wa i { font-size: 1.5rem; }
+    .btn-outline-wa { background: transparent; border: 1.5px solid #25D366; color: #fff; backdrop-filter: blur(4px); }
+    .btn-outline-wa:hover { background: #25D366; color: #000; border-color: #fff; }
+    .btn-wa:hover { background: #20b359; transform: scale(1.05); border-color: #fff; }
+
+    /* slider (used for tiles/gamazine hero) */
+    .hero-slider { height: 100vh; width: 100%; position: relative; overflow: hidden; }
+    .slider-container { height: 100%; width: 100%; position: relative; }
+    .slides { height: 100%; width: 100%; position: relative; }
+    .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; visibility: hidden; transition: opacity 1.2s cubic-bezier(0.25, 0.1, 0.15, 1), visibility 1.2s; z-index: 1; }
+    .slide.active { opacity: 1; visibility: visible; z-index: 20; }
+    .slide img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.7) saturate(1.1); scale: 1.05; transition: scale 6s ease; }
+    .slide.active img { scale: 1; }
+    .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 30% 40%, rgba(0,30,10,0.45) 0%, rgba(0,0,0,0.75) 90%); z-index: 2; }
+    .slide-content { position: absolute; top: 55%; left: 8%; transform: translateY(-40%); z-index: 30; max-width: 750px; color: white; text-shadow: 0 5px 25px rgba(0,0,0,0.7); opacity: 0; filter: blur(8px); transition: opacity 0.8s 0.3s, filter 0.8s 0.3s, transform 0.8s 0.3s; }
+    .slide.active .slide-content { opacity: 1; filter: blur(0); transform: translateY(-50%); }
+    .slide-content .badge { display: inline-block; background: #14ff72cb; color: #000; font-weight: 600; padding: 0.3rem 1.5rem; border-radius: 40px; font-size: 0.95rem; margin-bottom: 1.5rem; border: 1px solid #fff; backdrop-filter: blur(4px); letter-spacing: 1px; }
+    .slide-content h2 { font-size: clamp(3rem, 12vw, 6rem); font-weight: 800; line-height: 1.1; text-transform: uppercase; background: linear-gradient(130deg, #fff, #e0ffd0); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 0.3rem; }
+    .slide-content .subtitle { font-size: clamp(1.3rem, 4vw, 2.3rem); font-weight: 400; color: #b8ffd0; margin-bottom: 1rem; }
+    .arrows { position: absolute; top: 50%; right: 2%; transform: translateY(-50%); z-index: 60; display: flex; flex-direction: column; gap: 15px; }
+    .arrows button { width: 54px; height: 54px; border-radius: 50%; background: rgba(20, 255, 114, 0.2); backdrop-filter: blur(12px); border: 1.5px solid #ffffff60; color: white; font-size: 2rem; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; }
+    .arrows button:hover { background: #14ff72cb; color: #000; border-color: white; transform: scale(1.1); }
+
+    /* project cards (reusable) */
+    .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
+    .project-card { background: #1b1b1b; border-radius: 30px; overflow: hidden; border: 1px solid #2d2d2d; transition: 0.3s; box-shadow: 0 20px 30px -5px #00000080; }
+    .project-card:hover { border-color: #14ff72; transform: translateY(-8px); }
+    .project-card img { width: 100%; height: 250px; object-fit: cover; }
+    .project-info { padding: 1.8rem 1.5rem; }
+    .project-info h3 { font-size: 1.7rem; margin-bottom: 0.5rem; color: #f5f5f5; }
+    .project-info p { color: #aaa; margin-bottom: 1.5rem; }
+    .card-wa-link { display: inline-flex; align-items: center; gap: 10px; background: #25D36620; padding: 0.7rem 1.4rem; border-radius: 40px; color: #25D366; text-decoration: none; font-weight: 500; border: 1px dashed #25D36660; transition: 0.2s; }
+    .card-wa-link:hover { background: #25D366; color: #000; border: 1px solid white; }
+
+    /* booking CTA */
+    .booking-cta { background: #0f0f0f; padding: 5rem 6%; text-align: center; border-top: 1px solid #222; border-bottom: 1px solid #222; }
+    .cta-content h2 { font-size: 3rem; font-weight: 700; margin-bottom: 1rem; }
+    .cta-content h2 span { color: #14ff72; }
+    .cta-content p { font-size: 1.3rem; max-width: 700px; margin: 0 auto 2.5rem; color: #ccc; }
+    .big-wa-btn { background: #25D366; border: none; padding: 1.5rem 4rem; border-radius: 80px; font-size: 2rem; font-weight: 700; color: #0b0b0b; display: inline-flex; align-items: center; gap: 20px; box-shadow: 0 20px 30px #00000080; transition: 0.3s; border: 2px solid #ffffff80; text-decoration: none; }
+    .big-wa-btn i { font-size: 3rem; }
+    .big-wa-btn:hover { background: #20b859; transform: scale(1.02); box-shadow: 0 20px 40px #14ff7240; }
+
+    /* footer */
+    footer { background: #070707; padding: 3rem 6% 2rem; text-align: center; color: #aaa; }
+    .footer-phone { font-size: 1.8rem; font-weight: 600; margin: 1.5rem 0; color: #14ff72; }
+    .footer-phone i { margin-right: 10px; color: #25D366; }
+
+    /* about owner card */
+    .owner-card { background: #ffffffd9; backdrop-filter: blur(8px); border-radius: 50px; padding: 2.5rem 2rem; box-shadow: 0 30px 45px -20px #6b5840; border: 1px solid #ecdbaa; text-align: center; }
+    .owner-img { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 5px solid #b48c54; margin-bottom: 1rem; }
+    .owner-name { font-size: 2rem; font-family: 'Playfair Display', serif; }
+    .owner-wa-link { display: inline-flex; align-items: center; gap: 12px; background: #25D366; padding: 1rem 2rem; border-radius: 60px; color: #1f3a1f; font-weight: 700; text-decoration: none; margin-top: 1.5rem; border: 2px solid white; }
+
+    /* responsive */
+    @media (max-width: 900px) {
+      .nav-links { position: fixed; top: 80px; left: 0; width: 100%; background: rgba(0,0,0,0.98); backdrop-filter: blur(20px); flex-direction: column; align-items: center; padding: 2rem 0; gap: 2rem; transform: translateY(-150%); transition: 0.3s; border-bottom: 2px solid #14ff7240; pointer-events: none; }
+      .nav-links.active { transform: translateY(0); pointer-events: all; }
+      .menu-btn { display: block; }
+      .slide-content { left: 5%; right: 5%; }
+      .arrows { right: 4%; }
+    }
+    @media (max-width: 550px) {
+      .btn { padding: 0.8rem 1.5rem; font-size: 1rem; }
+      .whatsapp-float { width: 55px; height: 55px; font-size: 2rem; bottom: 20px; right: 15px; }
+      .big-wa-btn { font-size: 1.5rem; padding: 1.2rem 2rem; }
+      .logo-img { height: 35px; }
+    }
+
+    /* additional specific sections (quick port) */
+    .intro-section { display: flex; flex-wrap: wrap; align-items: center; gap: 3rem; }
+    .intro-text { flex: 1 1 400px; }
+    .finish-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap:2rem; }
+    .service-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap:2rem; }
+    .benefits-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap:2rem; }
+    .advantage-list { list-style: none; }
+    .advantage-list li { display: flex; align-items: center; gap:12px; margin-bottom:1rem; }
+  </style>
+</head>
+<body>
+  <!-- floating WhatsApp (single, updated number +27 67 702 3237) -->
+  <a href="https://wa.me/27677023237?text=Hello%20TilesExpert!%20I'm%20interested%20in%20your%20services." class="whatsapp-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
+
+  <!-- navigation (logo replaced with image) -->
+  <nav>
+    <div class="logo">
+      <img class="logo-img" src="https://i.ibb.co/tPCgrCqs/file-0000000057b471fd9b60085e08ee932c.png" alt="Home Sweet Home logo">
+      Sweet<span>Home</span>
+    </div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#gamazine">Gamazine</a></li>
+      <li><a href="#glamour">Glamour Coat</a></li>
+      <li><a href="#painting">Painting</a></li>
+      <li><a href="#tiles">Tiles</a></li>
+      <li><a href="#about">About</a></li>
+      <!-- updated number in nav link -->
+      <li><a href="https://wa.me/27677023237?text=Booking%20inquiry"><i class="fab fa-whatsapp"></i> +27 67 702 3237</a></li>
+    </ul>
+    <div class="menu-btn" id="menuBtn"><i class="fas fa-bars"></i></div>
+  </nav>
+
+  <!-- ############ HERO (original tiles homepage slider, reused as main home) ############ -->
+  <section class="hero-slider" id="home">
+    <div class="slider-container">
+      <div class="slides" id="mainSlides">
+        <div class="slide active"><img src="https://i.ibb.co/VRZwfgD/kitchen.jpg" alt="kitchen tiles"><div class="overlay"></div><div class="slide-content"><span class="badge"><i class="fas fa-kitchen-set"></i> kitchen</span><h2>ceramic</h2><div class="subtitle">elegant & durable</div><p>Premium porcelain & ceramic tiles.</p><div class="btn-group"><a href="https://wa.me/27677023237?text=Hello%20Tiles!%20I%20want%20kitchen%20tiles." target="_blank" class="btn btn-wa"><i class="fab fa-whatsapp"></i> book now</a></div></div></div>
+        <div class="slide"><img src="https://i.ibb.co/LD2nZj9n/bathroom.jpgs" alt="bathroom"><div class="overlay"></div><div class="slide-content"><span class="badge"><i class="fas fa-bath"></i> bathroom</span><h2>marble look</h2><div class="subtitle">spa experience</div><p>Luxury bathroom tiling.</p><div class="btn-group"><a href="https://wa.me/27677023237?text=I%20love%20the%20bathroom%20marble%20tiles!" target="_blank" class="btn btn-wa"><i class="fab fa-whatsapp"></i> book this style</a></div></div></div>
+        <div class="slide"><img src="https://i.ibb.co/jZJqV7vD/living-room.jpg" alt="living room"><div class="overlay"></div><div class="slide-content"><span class="badge"><i class="fas fa-couch"></i> living area</span><h2>wood effect</h2><div class="subtitle">warm & natural</div><p>Porcelain wood‑look tiles.</p><div class="btn-group"><a href="https://wa.me/27677023237?text=Wood%20effect%20tiles%20for%20living%20room" target="_blank" class="btn btn-wa"><i class="fab fa-whatsapp"></i> yes, I want this</a></div></div></div>
+      </div>
+      <div class="arrows"><button class="prev"><i class="fas fa-chevron-up"></i></button><button class="next"><i class="fas fa-chevron-down"></i></button></div>
+    </div>
+  </section>
+
+  <!-- ############ GAMAZINE section ############ -->
+  <section class="section-padding bg-dark2" id="gamazine">
+    <h2 class="section-title"><span>Gamazine</span> — textured elegance</h2>
+    <div class="project-grid">
+      <div class="project-card"><img src="https://i.ibb.co/Lzjrh1fN/1.jpg" alt="gamazine wall"><div class="project-info"><h3>exterior finish</h3><p>Weatherproof gamazine coating.</p><a href="https://wa.me/27677023237?text=Gamazine%20exterior%20finish" class="card-wa-link"><i class="fab fa-whatsapp"></i> I want this →</a></div></div>
+      <div class="project-card"><img src="https://i.ibb.co/PsF1RFTY/2.jpg" alt="gamazine interior"><div class="project-info"><h3>mineral interior</h3><p>Soft earthy tones.</p><a href="https://wa.me/27677023237?text=Gamazine%20interior%20earth%20tones" class="card-wa-link"><i class="fab fa-whatsapp"></i> get this look</a></div></div>
+      <div class="project-card"><img src="https://i.ibb.co/99r39HDR/3.jpg" alt="modern gamazine"><div class="project-info"><h3>modern loft</h3><p>Green mineral coating.</p><a href="https://wa.me/27677023237?text=Modern%20gamazine%20loft" class="card-wa-link"><i class="fab fa-whatsapp"></i> interested</a></div></div>
+    </div>
+  </section>
+
+  <!-- ############ GLAMOUR COAT section ############ -->
+  <section class="section-padding bg-cream" id="glamour">
+    <h2 class="section-title gold-title"><span>Glamour Coat</span> — luxury walls</h2>
+    <div class="intro-section">
+      <div class="intro-text"><p>Venetian plaster, metallic & suede finishes. Artisan crafted.</p></div>
+      <div class="finish-grid" style="flex:2">
+        <div class="project-card" style="background:#fff; color:#333;"><img src="https://i.ibb.co/tPMyYvyM/1.jpg" alt="velvet"><div class="project-info"><h3>Velvet touch</h3><a href="https://wa.me/27677023237?text=Velvet%20touch%20glamour%20coat" class="card-wa-link"><i class="fab fa-whatsapp"></i> inquire</a></div></div>
+        <div class="project-card" style="background:#fff; color:#333;"><img src="https://i.ibb.co/bMSN8Qmx/2.jpg" alt="metallic"><div class="project-info"><h3>Metallic aura</h3><a href="https://wa.me/27677023237?text=Metallic%20aura%20glamour" class="card-wa-link"><i class="fab fa-whatsapp"></i> sample</a></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ############ PAINTING section ############ -->
+  <section class="section-padding bg-soft" id="painting">
+    <h2 class="section-title blue-title"><span>Painting</span> — residential & commercial</h2>
+    <div class="service-grid">
+      <div class="project-card" style="background:white; color:#000;"><img src="https://i.ibb.co/mCmGqtCC/1.jpg" alt="painter"><div class="project-info"><h3>Interior</h3><a href="https://wa.me/27677023237?text=Interior%20painting" class="card-wa-link"><i class="fab fa-whatsapp"></i> book</a></div></div>
+      <div class="project-card" style="background:white; color:#000;"><img src="https://i.ibb.co/C3vR1TMk/2.jpg" alt="exterior"><div class="project-info"><h3>Exterior</h3><a href="https://wa.me/27677023237?text=Exterior%20painting" class="card-wa-link"><i class="fab fa-whatsapp"></i> quote</a></div></div>
+    </div>
+    <div style="margin-top:2rem; background:#e6f0ff; padding:2rem; border-radius:30px; color:#000;"><i class="fas fa-check-circle" style="color:#2563eb;"></i> Premium paints (Dulux, Plascon) · 5‑year guarantee</div>
+  </section>
+
+  <!-- ############ TILES section ############ -->
+  <section class="section-padding bg-dark1" id="tiles">
+    <h2 class="section-title"><span>Tiles</span> — transform your home</h2>
+    <div class="project-grid">
+      <div class="project-card"><img src="https://i.ibb.co/VRZwfgD/kitchen.jpg" alt="kitchen"><div class="project-info"><h3>Kitchen</h3><a href="https://wa.me/27677023237?text=Kitchen%20tiles" class="card-wa-link"><i class="fab fa-whatsapp"></i> I want this</a></div></div>
+      <div class="project-card"><img src="https://i.ibb.co/LD2nZj9n/bathroom.jpg" alt="bathroom"><div class="project-info"><h3>Bathroom</h3><a href="https://wa.me/27677023237?text=Bathroom%20tiles%20marble" class="card-wa-link"><i class="fab fa-whatsapp"></i> get look</a></div></div>
+      <div class="project-card"><img src="https://i.ibb.co/jZJqV7vD/living-room.jpg" alt="wood"><div class="project-info"><h3>Wood effect</h3><a href="https://wa.me/27677023237?text=Wood%20effect%20tiles" class="card-wa-link"><i class="fab fa-whatsapp"></i> interested</a></div></div>
+    </div>
+  </section>
+
+  <!-- ############ ABOUT section (founder + story) ############ -->
+  <section class="section-padding bg-warm" id="about">
+    <h2 class="section-title" style="border-left-color:#b48c54;"><span style="color:#b48c54;">About</span> us & founder</h2>
+    <div style="display: flex; flex-wrap: wrap; gap: 3rem;">
+      <div style="flex:2"><p style="font-size:1.3rem;">Home Sweet Home started in 2023. We treat every home like our own.</p><div style="background:#e8dfcf; padding:2rem; border-radius:30px;"><i class="fas fa-handshake"></i> <strong>30+</strong> homes transformed · 4.9 stars</div></div>
+      <div class="owner-card" style="flex:1;"><img src="https://i.ibb.co/tPCgrCqs/file-0000000057b471fd9b60085e08ee932c.png" alt="Sbonakaliso" class="owner-img"><div class="owner-name">Dlamini Sibonakaliso</div><div style="margin:1rem 0;">3 years experience · replies on WhatsApp</div><a href="https://wa.me/27677023237?text=Hi%20Daniel!%20From%20your%20about%20page." class="owner-wa-link"><i class="fab fa-whatsapp"></i> chat with Sboniso</a></div>
+    </div>
+  </section>
+
+  <!-- ############ MAIN BOOKING CTA (unified) ############ -->
+  <section class="booking-cta" id="book-main">
+    <div class="cta-content">
+      <h2><span>ready to</span> transform your home?</h2>
+      <p>Send your name & address on WhatsApp – we'll come over.</p>
+      <!-- updated number in big CTA -->
+      <a href="https://wa.me/27677023237?text=Hello%20TilesExpert!%20I%20want%20to%20book%20a%20service.%20My%20name%20is%20...%20address%20...%20" target="_blank" class="big-wa-btn"><i class="fab fa-whatsapp"></i> +27 67 702 3237 <span style="font-size:1.2rem;">tap to chat</span></a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="logo" style="justify-content:center;">
+      <img class="logo-img" src="https://i.ibb.co/tPCgrCqs/file-0000000057b471fd9b60085e08ee932c.png" alt="Home Sweet Home logo" style="height:40px;">
+      <span>Home</span>Sweet<span>Home</span>
+    </div>
+    <div class="footer-phone"><i class="fab fa-whatsapp"></i> <a href="https://wa.me/27677023237" style="color:#14ff72;">+27 67 702 3237</a></div>
+    <p>© 2025 TilesExpert – all services in one place</p>
+  </footer>
+
+  <script>
+    (function() {
+      // Mobile menu
+      const menuBtn = document.getElementById('menuBtn');
+      const navLinks = document.getElementById('navLinks');
+      if (menuBtn) {
+        menuBtn.addEventListener('click', (e) => { e.stopPropagation(); navLinks.classList.toggle('active'); });
+        navLinks.querySelectorAll('a').forEach(link => link.addEventListener('click', () => navLinks.classList.remove('active')));
+        document.addEventListener('click', (e) => { if (!navLinks.contains(e.target) && !menuBtn.contains(e.target)) navLinks.classList.remove('active'); });
+      }
+
+      // main slider (home)
+      const slides = document.querySelectorAll('#mainSlides .slide');
+      const prev = document.querySelector('.prev');
+      const next = document.querySelector('.next');
+      let current = 0;
+      function showSlide(i) {
+        if (i < 0) i = slides.length-1; if (i >= slides.length) i = 0;
+        slides.forEach((s,idx) => s.classList.toggle('active', idx === i));
+        current = i;
+      }
+      if (prev) prev.addEventListener('click', () => showSlide(current-1));
+      if (next) next.addEventListener('click', () => showSlide(current+1));
+      setInterval(() => showSlide(current+1), 7000);
+
+      // hero height adjust
+      const hero = document.querySelector('.hero-slider');
+      function setHeight() { if (hero) hero.style.height = window.innerHeight + 'px'; }
+      window.addEventListener('resize', setHeight); setHeight();
+    })();
+  </script>
+</body>
+</html>
