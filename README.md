@@ -11,7 +11,7 @@ A modern, responsive landing page for a home renovation and tiling services comp
 
 ## 🏠 Live Demo
 
-Visit the live website: [https://your-username.github.io/home-sweet-home](https://your-username.github.io/home-sweet-home)
+Visit the live website: [https://nt-sandi.github.io/home-sweet-home](https://nt-sandi.github.io/home-sweet-home)
 
 ## ✨ Features
 
